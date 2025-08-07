@@ -116,20 +116,14 @@ function sendToGoogleSheet(data) {
   submitBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> กำลังส่งข้อมูล...';
   submitBtn.disabled = true;
 
-  // fetch("https://script.google.com/macros/s/AKfycbzqzz3KBvLCODUdLeU5H9L86xs35KfQzFio4-p7Y3ev-7SOT_i-qfz_rW7Lz7c0DjXjYQ/exec", {
-  //  method: "POST",
-  //  headers: {
-  //   "Content-Type": "application/x-www-form-urlencoded"
-  // },
-   fetch("https://script.google.com/macros/s/AKfycbwU3TvGzgM07fIC2wEpNLYDnK2CsdK1KH4PcpihZgXhw7vhiwCeyxLUSJ5U9mZHF4zzOQ/exec", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"  // สำคัญ!
-  },
-  body: JSON.stringify(data)  // สำคัญ!
-})
-    body: new URLSearchParams(data)  // แปลง object → form data
-  } 
+  // ใช้ URL ที่ถูกต้อง (ลบ space) และใช้ application/json
+  fetch("https://script.google.com/macros/s/AKfycbwU3TvGzgM07fIC2wEpNLYDnK2CsdK1KH4PcpihZgXhw7vhiwCeyxLUSJ5U9mZHF4zzOQ/exec", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"  // ส่งเป็น JSON
+    },
+    body: JSON.stringify(data)  // แปลง object เป็น JSON string
+  })
   .then(response => {
     if (!response.ok) throw new Error("Network response was not ok");
     return response.json();
@@ -151,7 +145,6 @@ function sendToGoogleSheet(data) {
     submitBtn.disabled = false;
   });
 }
-
 
 // เพิ่ม CSS สำหรับ animation
 const style = document.createElement('style');

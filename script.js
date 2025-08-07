@@ -118,12 +118,12 @@ function sendToGoogleSheet(data) {
   submitBtn.disabled = true;
 
   fetch("https://script.google.com/macros/s/AKfycbzm4kwhW_sFbxNYy_xZpSbQww66K5rsqHxbtSLYKrz7gfEu3LD40t1zOE81PBXDeyMBKw/exec", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json"
-    }
-  })
+  method: "POST",
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded"
+  },
+  body: new URLSearchParams(data)
+})
   .then(response => {
     if (!response.ok) {
       throw new Error('Network response was not ok');

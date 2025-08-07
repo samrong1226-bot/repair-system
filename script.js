@@ -129,7 +129,7 @@ function sendToGoogleSheet(data) {
   body: JSON.stringify(data)  // สำคัญ!
 })
     body: new URLSearchParams(data)  // แปลง object → form data
-  }) 
+  } 
   .then(response => {
     if (!response.ok) throw new Error("Network response was not ok");
     return response.json();

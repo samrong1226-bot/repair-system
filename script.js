@@ -116,7 +116,7 @@ function sendToGoogleSheet(data) {
   submitBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> กำลังส่งข้อมูล...';
   submitBtn.disabled = true;
 
-  fetch("https://script.google.com/macros/s/AKfycbzm4kwhW_sFbxNYy_xZpSbQww66K5rsqHxbtSLYKrz7gfEu3LD40t1zOE81PBXDeyMBKw/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbzqzz3KBvLCODUdLeU5H9L86xs35KfQzFio4-p7Y3ev-7SOT_i-qfz_rW7Lz7c0DjXjYQ/exec", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"

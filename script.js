@@ -117,7 +117,7 @@ function sendToGoogleSheet(data) {
   submitBtn.disabled = true;
 
   // ใช้ URL ที่ถูกต้อง (ลบ space) และใช้ application/json
-  fetch("https://script.google.com/macros/s/AKfycbwU3TvGzgM07fIC2wEpNLYDnK2CsdK1KH4PcpihZgXhw7vhiwCeyxLUSJ5U9mZHF4zzOQ/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbzB0WcjjHpvRL_mZM-u8bcQTfpxrr9h4CqsJpqTHK3JFA0JqOb55RqivGbIza4lLRnAag/exec", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"  // ส่งเป็น JSON

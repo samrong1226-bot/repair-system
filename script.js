@@ -116,13 +116,20 @@ function sendToGoogleSheet(data) {
   submitBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> กำลังส่งข้อมูล...';
   submitBtn.disabled = true;
 
-  fetch("https://script.google.com/macros/s/AKfycbzqzz3KBvLCODUdLeU5H9L86xs35KfQzFio4-p7Y3ev-7SOT_i-qfz_rW7Lz7c0DjXjYQ/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
+  // fetch("https://script.google.com/macros/s/AKfycbzqzz3KBvLCODUdLeU5H9L86xs35KfQzFio4-p7Y3ev-7SOT_i-qfz_rW7Lz7c0DjXjYQ/exec", {
+  //  method: "POST",
+  //  headers: {
+  //   "Content-Type": "application/x-www-form-urlencoded"
+  // },
+   fetch("https://script.google.com/macros/s/xxxxxxxxxxxxxxxxxxx/exec", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"  // สำคัญ!
+  },
+  body: JSON.stringify(data)  // สำคัญ!
+})
     body: new URLSearchParams(data)  // แปลง object → form data
-  })
+  }) 
   .then(response => {
     if (!response.ok) throw new Error("Network response was not ok");
     return response.json();

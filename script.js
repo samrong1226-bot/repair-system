@@ -60,20 +60,12 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     
-    // ถ้าเลือกสถานที่แล้ว ให้เลือกเครื่องจักรด้วย (ถ้าไม่ใช่ other)
-    if (location !== "other" && document.getElementById("machineGroup").style.display !== "none") {
-      const machine = document.getElementById("machine").value;
-      // ถ้าอยากให้บังคับเลือกเครื่องจักร ให้เปิด comment ด้านล่าง
-      // if (!machine) {
-      //   alert("กรุณาเลือกเครื่องจักร!");
-      //   return;
-      // }
-    }
-    
-    alert("ระบบยังไม่ได้เชื่อมต่อกับ Google Sheet จริง\nในขั้นตอนนี้จะแสดงข้อมูลใน Console แทน");
+    // สร้าง ID
+    const repairID = generateRepairID();
     
     // รวบรวมข้อมูล
     const formData = {
+      repairID: repairID,
       datetime: document.getElementById("datetime").value,
       jobType: document.getElementById("jobType").value,
       location: document.getElementById("location").value,
@@ -81,18 +73,26 @@ document.addEventListener("DOMContentLoaded", function () {
       otherLocation: document.getElementById("otherLocation").value,
       problem: document.getElementById("problem").value,
       note: document.getElementById("note").value,
-      reporter: document.getElementById("reporter").value
+      reporter: document.getElementById("reporter").value,
+      status: "แจ้งแล้ว" // สถานะเริ่มต้น
     };
     
     console.log("ข้อมูลที่จะส่ง:", formData);
-    
-    // ที่นี่จะเพิ่มการส่งข้อมูลไปยัง Google Apps Script
-    // sendToGoogleSheet(formData);
+    alert("ระบบยังไม่ได้เชื่อมต่อกับ Google Sheet จริง\nข้อมูลจะแสดงใน Console แทน");
   });
 });
 
+function generateRepairID() {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = now.getFullYear();
+  const timestamp = String(Date.now()).slice(-4);
+  return `${day}${month}${year}-${timestamp}`;
+}
+
 function loadMachines(location) {
-  // Mock data สำหรับแต่ละ Line
+  // Mock data - ในอนาคตจะดึงจาก Google Sheet จริง
   const machines = {
     "Line 1": ["เครื่องอัด成型 A1", "เครื่องตัด B1", "เครื่องตรวจสอบ C1"],
     "Line 2": ["เครื่องหลอม D2", "เครื่องขึ้นรูป E2", "เครื่องบรรจุ F2"],
@@ -120,25 +120,3 @@ function loadMachines(location) {
     });
   }
 }
-
-// ฟังก์ชันสำหรับส่งข้อมูลไป Google Sheet (รอเชื่อมต่อ)
-// function sendToGoogleSheet(data) {
-//   fetch("https://script.google.com/macros/s/YOUR_SCRIPT_URL/exec", {
-//     method: "POST",
-//     body: JSON.stringify(data),
-//     headers: {
-//       "Content-Type": "application/json"
-//     }
-//   })
-//   .then(response => response.text())
-//   .then(result => {
-//     alert("ส่งข้อมูลสำเร็จ!");
-//     document.getElementById("repairForm").reset();
-//     document.getElementById("machineGroup").style.display = "none";
-//     document.getElementById("otherLocationGroup").style.display = "none";
-//   })
-//   .catch(error => {
-//     console.error("Error:", error);
-//     alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
-//   });
-// }

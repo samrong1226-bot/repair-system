@@ -41,16 +41,19 @@ document.addEventListener("DOMContentLoaded", function () {
     
     if (!reporter) {
       alert("กรุณาระบุชื่อผู้แจ้ง!");
+      document.getElementById("reporter").focus();
       return;
     }
     
     if (!jobType) {
       alert("กรุณาเลือกประเภทงาน!");
+      document.getElementById("jobType").focus();
       return;
     }
     
     if (!location) {
       alert("กรุณาเลือกสถานที่!");
+      document.getElementById("location").focus();
       return;
     }
     
@@ -60,12 +63,8 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     
-    // สร้าง ID
-    const repairID = generateRepairID();
-    
     // รวบรวมข้อมูล
     const formData = {
-      repairID: repairID,
       datetime: document.getElementById("datetime").value,
       jobType: document.getElementById("jobType").value,
       location: document.getElementById("location").value,
@@ -73,23 +72,13 @@ document.addEventListener("DOMContentLoaded", function () {
       otherLocation: document.getElementById("otherLocation").value,
       problem: document.getElementById("problem").value,
       note: document.getElementById("note").value,
-      reporter: document.getElementById("reporter").value,
-      status: "แจ้งแล้ว" // สถานะเริ่มต้น
+      reporter: document.getElementById("reporter").value
     };
     
-    console.log("ข้อมูลที่จะส่ง:", formData);
-    alert("ระบบยังไม่ได้เชื่อมต่อกับ Google Sheet จริง\nข้อมูลจะแสดงใน Console แทน");
+    // ส่งข้อมูลไป Backend
+    sendToGoogleSheet(formData);
   });
 });
-
-function generateRepairID() {
-  const now = new Date();
-  const day = String(now.getDate()).padStart(2, '0');
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const year = now.getFullYear();
-  const timestamp = String(Date.now()).slice(-4);
-  return `${day}${month}${year}-${timestamp}`;
-}
 
 function loadMachines(location) {
   // Mock data - ในอนาคตจะดึงจาก Google Sheet จริง
@@ -120,3 +109,60 @@ function loadMachines(location) {
     });
   }
 }
+
+function sendToGoogleSheet(data) {
+  // แสดง loading
+  const submitBtn = document.querySelector('button[type="submit"]');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> กำลังส่งข้อมูล...';
+  submitBtn.disabled = true;
+
+  fetch("https://script.google.com/macros/s/AKfycbwEf7XJ5l1Z9tmRrCEhftqKTEdCGVLnJAJAXVyHaxg3/dev", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(result => {
+    if (result.error) {
+      throw new Error(result.error);
+    }
+    
+    // แสดงผลสำเร็จ
+    alert("✅ ส่งข้อมูลสำเร็จ!\nเลขที่แจ้งซ่อม: " + result.repairID);
+    
+    // รีเซ็ตฟอร์ม
+    document.getElementById("repairForm").reset();
+    document.getElementById("machineGroup").style.display = "none";
+    document.getElementById("otherLocationGroup").style.display = "none";
+  })
+  .catch(error => {
+    console.error("Error:", error);
+    alert("❌ เกิดข้อผิดพลาดในการส่งข้อมูล:\n" + error.message);
+  })
+  .finally(() => {
+    // คืนค่าปุ่ม
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  });
+}
+
+// เพิ่ม CSS สำหรับ animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .spin {
+    animation: spin 1s linear infinite;
+  }
+`;
+document.head.appendChild(style);

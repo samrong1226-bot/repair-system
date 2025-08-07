@@ -121,7 +121,7 @@ function sendToGoogleSheet(data) {
   //  headers: {
   //   "Content-Type": "application/x-www-form-urlencoded"
   // },
-   fetch("https://script.google.com/macros/s/xxxxxxxxxxxxxxxxxxx/exec", {
+   fetch("https://script.google.com/macros/s/AKfycbwU3TvGzgM07fIC2wEpNLYDnK2CsdK1KH4PcpihZgXhw7vhiwCeyxLUSJ5U9mZHF4zzOQ/exec", {
   method: "POST",
   headers: {
     "Content-Type": "application/json"  // สำคัญ!

@@ -1,7 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Set current datetime
   const now = new Date();
-  document.getElementById("datetime").value = now.toLocaleString("th-TH");
+  document.getElementById("datetime").value = now.toLocaleString("th-TH", {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 
   // Load machine list based on location
   document.getElementById("location").addEventListener("change", function () {
@@ -14,16 +20,32 @@ document.addEventListener("DOMContentLoaded", function () {
       otherGroup.style.display = "block";
     } else {
       otherGroup.style.display = "none";
-      machineGroup.style.display = "block";
-      loadMachines(loc);
+      if (loc) {
+        machineGroup.style.display = "block";
+        loadMachines(loc);
+      } else {
+        machineGroup.style.display = "none";
+      }
     }
   });
 
-  // Submit form
+  // Form submission
   document.getElementById("repairForm").addEventListener("submit", function (e) {
     e.preventDefault();
     
-    // รวบรวมข้อมูลจากฟอร์ม
+    // Simple validation
+    const reporter = document.getElementById("reporter").value.trim();
+    const jobType = document.getElementById("jobType").value;
+    const location = document.getElementById("location").value;
+    
+    if (!reporter || !jobType || !location) {
+      alert("กรุณากรอกข้อมูลให้ครบถ้วน!");
+      return;
+    }
+    
+    alert("ระบบยังไม่ได้เชื่อมต่อกับ Google Sheet จริง\nในขั้นตอนนี้จะแสดงข้อมูลใน Console แทน");
+    
+    // รวบรวมข้อมูล
     const formData = {
       datetime: document.getElementById("datetime").value,
       jobType: document.getElementById("jobType").value,
@@ -34,40 +56,24 @@ document.addEventListener("DOMContentLoaded", function () {
       note: document.getElementById("note").value,
       reporter: document.getElementById("reporter").value
     };
-
-    // แสดงข้อมูลใน console (ทดสอบเบื้องต้น)
-    console.log(formData);
-    alert("ระบบยังไม่ได้เชื่อมต่อกับ Google Sheet จริง ต้องใช้ Google Apps Script");
     
-    // ถ้าจะส่งจริง ให้เปิด comment ส่วนล่างนี้
-    /*
-    fetch("https://script.google.com/macros/s/YOUR_SCRIPT_URL/exec", {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-    .then(response => response.text())
-    .then(data => {
-      alert(data);
-      document.getElementById("repairForm").reset();
-    })
-    .catch(error => console.error("Error:", error));
-    */
+    console.log("ข้อมูลที่จะส่ง:", formData);
   });
 });
 
 function loadMachines(location) {
-  // ดึงข้อมูลเครื่องจักรจาก Google Sheet ผ่าน API
-  // ตัวอย่างนี้ใช้ placeholder
+  // Mock data - ในอนาคตจะดึงจาก API
   const machines = {
-    "Line 1": ["Machine A", "Machine B"],
-    "Line 2": ["Machine C", "Machine D"]
+    "Line 1": ["เครื่องอัด成型 A1", "เครื่องตัด B2", "เครื่องตรวจสอบ C3"],
+    "Line 2": ["เครื่องหลอม D4", "เครื่องขึ้นรูป E5", "เครื่องบรรจุ F6"],
+    "Line 3": ["เครื่องพ่นสี G7", "เครื่องอบ H8", "เครื่องตรวจสอบคุณภาพ I9"],
+    "คลังสินค้า": ["รถยก J10", "คอนเวเยอร์ K11", "ระบบควบคุม L12"],
+    "อาคารสำนักงาน": ["เครื่องปรับอากาศ M13", "ระบบไฟฟ้า N14", "ระบบ CCTV O15"]
   };
 
   const select = document.getElementById("machine");
   select.innerHTML = '<option value="">เลือกเครื่องจักร</option>';
+  
   if (machines[location]) {
     machines[location].forEach(m => {
       const opt = document.createElement("option");
